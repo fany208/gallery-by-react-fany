@@ -44,9 +44,9 @@ var ImgFigure = React.createClass({
 
     handleClick: function (e) {
 
-        if(this.props.arrange.isCenter){
+        if (this.props.arrange.isCenter) {
             this.props.inverse();
-        }else{
+        } else {
             this.props.center();
         }
 
@@ -69,16 +69,17 @@ var ImgFigure = React.createClass({
             }.bind(this));
         }
 
-        if(this.props.arrange.isCenter){
+        if (this.props.arrange.isCenter) {
             styleObj.zIndex = 11;
         }
 
         var imgFigureClassName = 'img-figure';
         imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
 
+        imgFigureClassName += this.props.arrange.isCenter ? ' center-img' : '';
         return (
             <figure className={imgFigureClassName} style={styleObj} onClick={this.handleClick}>
-                <img src={this.props.data.imageURL}
+                <img width="200" src={this.props.data.imageURL}
                      alt={this.props.data.title}/>
                 <figcaption>
                     <h2 className="img-title">{this.props.data.title}</h2>
@@ -282,22 +283,31 @@ var GallerByReactFanyApp = React.createClass({
 
         this.Constant.centerPos = {
             left: halfStageW - halfImgW,
-            top: halfStageH - halfImgH
+            top: halfStageH - halfImgH - halfImgH / 3
         };
 
         this.Constant.hPosRange.leftSecX[0] = -halfImgW;
-        this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
-        this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
+        this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 2;
+        this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW / 2;
         this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
         this.Constant.hPosRange.y[0] = -halfImgH;
         this.Constant.hPosRange.y[1] = stageH - halfImgH;
 
         this.Constant.vPosRange.topY[0] = -halfImgH;
-        this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
+        this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 2;
         this.Constant.vPosRange.x[0] = halfStageW - imgW;
         this.Constant.vPosRange.x[1] = halfStageW;
 
-        this.rearrange(0);
+        var timerIndex = 0;
+        this.rearrange(timerIndex);
+
+        // var This = this;
+        // setInterval(function () {
+        //     if(timerIndex === 52){
+        //         timerIndex = 0;
+        //     }
+        //     This.rearrange(++timerIndex);
+        // }, 15000);
     },
 
     render: function () {
@@ -317,10 +327,12 @@ var GallerByReactFanyApp = React.createClass({
                     isCenter: false
                 };
             }
-            imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]}
+            imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index}
+                                       arrange={this.state.imgsArrangeArr[index]}
                                        inverse={this.inverse(index)} center={this.center(index)}/>);
 
-            controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+            controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]}
+                                                 inverse={this.inverse(index)} center={this.center(index)}/>);
         }.bind(this));
 
         return (
